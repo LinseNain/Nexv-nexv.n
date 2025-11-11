@@ -5,75 +5,90 @@
 @tailwind utilities;
 
 /* 
-  🎨 FONDO DE LA PÁGINA
+  🎨 FONDO DE LA PÁGINA → degradado sutil en vez de plano
 */
 body {
-  background-color: #eff6ff;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e6f4ff 100%);
   margin: 0;
   padding: 0;
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* 
-  🎨 Efecto de vidrio (glassmorphism)
+  🎨 Efecto de vidrio (glassmorphism) → más refinado
 */
 .glass-navbar {
+  background: rgba(255, 255, 255, 0.80);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  box-shadow: 0 8px 32px -10px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+
+}
+/*.glass-navbar {
   background: rgba(255, 255, 255, 0.85);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06);
-}
+}*/
 
 /* 
-  🌀 Animación: Fade In suave
+  🌀 Animación: Fade In suave y elegante
 */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(12px) scale(0.98);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 .animate-fade-in {
-  animation: fadeIn 0.4s ease-out;
+  animation: fadeIn 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  opacity: 0;
 }
 
 /* 
-  📱 Menú móvil: Slide desde arriba
+  📱 Menú móvil: desliza con elegancia
 */
 @keyframes slideDown {
   from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(-24px) scale(0.95);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 .animate-slide-down {
-  animation: slideDown 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+  animation: slideDown 0.4s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
 }
 
 /* 
-  ✨ Hover suave
+  ✨ Hover suave en cards, botones y enlaces
 */
 .hover-smooth {
-  transition: all 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: all 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform, box-shadow;
 }
 .hover-smooth:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 16px 40px -10px rgba(37, 99, 235, 0.15);
 }
 
 /* 
-  🖱️ Subrayado animado
+  🖱️ Subrayado animado en navegación
 */
 .nav-link {
   position: relative;
   display: inline-block;
+  font-weight: 600;
 }
 .nav-link::after {
   content: '';
@@ -82,8 +97,8 @@ body {
   left: 0;
   width: 0;
   height: 2px;
-  background-color: #2563eb;
-  transition: width 0.3s ease;
+  background: linear-gradient(90deg, #2563eb, #3b82f6);
+  transition: width 0.35s ease;
 }
 .nav-link:hover::after {
   width: 100%;
@@ -97,62 +112,176 @@ html {
 }
 button, a {
   -webkit-tap-highlight-color: transparent;
+  outline: none;
 }
 
 /* 
-  🖤 FONDO NEGRO PURO
+  🖤 FONDO NEGRO PURO para el footer
 */
 .footer-bg {
-  background-color: #000000;
+  background: linear-gradient(180deg, #000000 0%, #0a0a0a 100%);
 }
 
 /* 
-  🔵 TEXTO Y ENLACES → azul de tu marca
+  🔵 TEXTO Y ENLACES → azul de tu marca, con mejor contraste
 */
 .footer-title {
   color: #ffffff;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
 .footer-link {
   color: #aaaaaa;
-  transition: color 0.2s ease;
+  transition: all 0.25s ease;
+  font-weight: 500;
 }
 .footer-link:hover {
-  color: #2563eb; /* blue-600 */
+  color: #3b82f6;
+  transform: translateX(4px);
 }
 
 .footer-contact {
   color: #bbbbbb;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 .footer-copyright {
-  color: #888888;
+  color: #777777;
   font-size: 0.875rem;
 }
 
 /* 
-  🔵 BOTONES DE REDES SOCIALES → versión FINAL (intuitiva, usable, minimalista)
+  🔵 BOTONES DE REDES SOCIALES → modernos, con hover y accesibles
 */
 .social-btn {
-  width: 40px;
-  height: 40px;
-  background-color: #0c3ea8;
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, #0c3ea8 0%, #1d4ed8 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.25s ease;
+  transition: all 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
   color: white;
+  box-shadow: 0 4px 12px -4px rgba(12, 62, 168, 0.4);
 }
-
 .social-btn:hover {
-  background-color: #1d4ed8;
-  transform: scale(1.08);
+  transform: translateY(-3px) scale(1.12);
+  box-shadow: 0 8px 20px -4px rgba(12, 62, 168, 0.6);
+  background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
 }
 
 .social-btn svg {
   fill: currentColor;
   stroke: none;
+  width: 20px;
+  height: 20px;
 }
+
+/* 
+  💡 BOTONES PRINCIPALES → con brillo sutil al hacer hover
+*/
+.btn-primary {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  box-shadow: 0 4px 20px -4px rgba(37, 99, 235, 0.4);
+  transition: all 0.3s ease;
+}
+.btn-primary:hover {
+  box-shadow: 0 8px 30px -4px rgba(37, 99, 235, 0.6);
+  transform: translateY(-2px);
+}
+
+/* 
+  🎯 FOCUS VISIBLE para accesibilidad (teclado)
+*/
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* 
+  📏 MEJOR ESPACIADO EN MÓVIL
+*/
+@media (max-width: 640px) {
+  .glass-navbar {
+    margin: 0.75rem 0.75rem;
+    max-width: calc(100% - 1.5rem);
+    border-radius: 14px;
+  }
+
+  body {
+    background: #f8fafc;
+  }
+}
+
+/* Mascota animada */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(2deg); }
+}
+.nexy-float {
+  animation: float 4s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* 
+  🪞 CARDS ESTABLES CON BORDE Y EFECTO AZUL SUAVE (solo hover en escritorio)
+  — Sin transformaciones al hacer clic → ideal para móvil
+  — Iconos más grandes y visibles
+*/
+.glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(229, 231, 235, 0.7);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px -6px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  /* Evita cualquier escala o movimiento */
+  transform: none !important;
+  scale: 1 !important;
+}
+
+/* Hover solo en dispositivos con mouse (no en móvil) */
+@media (hover: hover) and (pointer: fine) {
+  .glass-card:hover {
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 8px 24px -6px rgba(37, 99, 235, 0.18);
+  }
+}
+
+/* Iconos dentro de las cards: más grandes y con mejor contraste */
+.glass-card svg {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+@media (min-width: 640px) {
+  .glass-card svg {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+@media (min-width: 768px) {
+  .glass-card svg {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* Asegurar que inputs, botones y selects no se deformen */
+.glass-card input,
+.glass-card button,
+.glass-card textarea,
+.glass-card select {
+  transform: none !important;
+  scale: 1 !important;
+}
+
