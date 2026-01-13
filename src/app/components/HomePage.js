@@ -1,7 +1,12 @@
-"use client";
+'use client';
 
 import React, { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+// Import condicional de supabase para evitar errores en server
+let supabase;
+if (typeof window !== 'undefined') {
+  const supabaseModule = require("@/lib/supabase");
+  supabase = supabaseModule.supabase;
+}
 
 // 🔹 Iconos profesionales
 import {
@@ -439,7 +444,7 @@ useEffect(() => {
               <div className="text-center mb-4">
                 <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Pack Básico</h3>
                 <div className="flex items-baseline justify-center mb-3">
-                  <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-600">299€</span>
+                  <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-600">150€</span>
                   <span className="text-gray-600 ml-1 text-xs sm:text-sm">/mes</span>
                 </div>
                 <p className="text-gray-600 text-xs sm:text-sm">Perfecto para empezar tu presencia digital</p>
@@ -474,7 +479,7 @@ useEffect(() => {
               <div className="text-center mb-4 mt-6">
                 <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Pack Medio</h3>
                 <div className="flex items-baseline justify-center mb-3">
-                  <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-600">599€</span>
+                  <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-600">200€</span>
                   <span className="text-gray-600 ml-1 text-xs sm:text-sm">/mes</span>
                 </div>
                 <p className="text-gray-600 text-xs sm:text-sm">La opción más popular para hacer crecer tu negocio</p>
@@ -508,7 +513,7 @@ useEffect(() => {
               <div className="text-center mb-4">
                 <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Pack Premium</h3>
                 <div className="flex items-baseline justify-center mb-3">
-                  <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-600">999€</span>
+                  <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-600">450€</span>
                   <span className="text-gray-600 ml-1 text-xs sm:text-sm">/mes</span>
                 </div>
                 <p className="text-gray-600 text-xs sm:text-sm">Solución completa para empresas ambiciosas</p>

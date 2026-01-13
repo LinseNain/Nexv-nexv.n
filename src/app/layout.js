@@ -1,68 +1,137 @@
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import GoogleAnalytics from "./components/GoogleAnalytics";
 import "./globals.css";
 
-// 🔍 SEO: metadata para Google, redes sociales, etc.
+// 🚀 SEO AVANZADO PARA GOOGLE SEARCH CONSOLE
+// Meta tags optimizadas para posicionamiento y rastreo
+
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://nex-v.com";
+
 export const metadata = {
+  // 🏷️ Títulos optimizados para CTR
   title: {
-    template: "%s | Nex-v",
-    default: "Nex-v | Soluciones Digitales para tu Negocio",
+    template: "%s | Nex-v - Agencia Digital Profesional",
+    default: "Nex-v | Soluciones Digitales para Empresas - Marketing Web & IT",
   },
+  
+  // 📝 Descripción rica en keywords y llamada a acción
   description:
-    "Desarrollo web, marketing digital y soporte IT para pequeñas y medianas empresas. Presencia online profesional, sin tecnicismos innecesarios.",
+    "Agencia digital especializada en desarrollo web, marketing digital y soporte IT para pymes. Creamos presencia online profesional que convierte visitantes en clientes. ✅ Sin tecnicismos innecesarios ✅ Resultados medibles ✅ Soporte continuo",
+  
+  // 🔑 Keywords estratégicas (aunque Google las ignora, ayudan a otros motores)
   keywords: [
-    "marketing digital",
-    "desarrollo web",
-    "agencia digital Madrid",
-    "soporte IT",
-    "SEO",
-    "páginas web profesionales",
+    "marketing digital Madrid",
+    "desarrollo web profesional",
+    "agencia digital España",
+    "soporte IT para empresas",
+    "SEO posicionamiento web",
+    "páginas web pymes",
+    "digitalización negocio",
+    "marketing online efectivo",
+    "desarrollo web responsive",
+    "consultoría digital"
   ],
-  authors: [{ name: "Nex-v" }],
-  creator: "Nex-v",
+  
+  // 👥 Información de autoría
+  authors: [{ name: "Nex-v", url: BASE_URL }],
+  creator: "Nex-v Digital Solutions",
   publisher: "Nex-v",
-  openGraph: {
-    type: "website",
-    locale: "es_ES",
-    url: "https://nex-v.com", // ⚠️ ¡Cámbialo por tu dominio cuando lo tengas!
-    siteName: "Nex-v",
-    title: "Nex-v | Soluciones Digitales",
-    description:
-      "Ayudamos a empresas a crecer online con soluciones reales y transparentes.",
-    images: [
-      {
-        url: "/og-image.jpg", // Opcional: añade una imagen en /public/og-image.jpg
-        width: 1200,
-        height: 630,
-        alt: "Nex-v - Soluciones Digitales",
-      },
-    ],
+  
+  // 🌐 Configuración multiregional
+  alternates: {
+    canonical: BASE_URL,
+    languages: {
+      'es-ES': BASE_URL,
+      'es': BASE_URL,
+    },
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "Nex-v | Soluciones Digitales",
-    description: "Presencia digital hecha a tu medida.",
-    creator: "@tusuario", // Opcional: tu usuario de Twitter
-  },
+  
+  // 🤖 Directivas para robots mejoradas
   robots: {
     index: true,
     follow: true,
+    nocache: false,
     googleBot: {
       index: true,
       follow: true,
       "max-video-preview": -1,
       "max-image-preview": "large",
       "max-snippet": -1,
+      "indexifembedded": true,
+      "notranslate": false,
     },
   },
-  alternates: {
-    canonical: "https://nex-v.com", // ⚠️ Igual, cámbialo a tu dominio
+  
+  // 🔍 Verificación de propiedad de Google Search Console
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION || "", // Añade tu código de verificación
   },
+  
+  // 📱 Open Graph mejorado para redes sociales
+  openGraph: {
+    type: "website",
+    locale: "es_ES",
+    alternateLocale: ["es_LA", "es_MX"],
+    url: BASE_URL,
+    siteName: "Nex-v | Agencia Digital Profesional",
+    title: "Nex-v | Soluciones Digitales para Empresas - Marketing Web & IT",
+    description: "Transformamos tu negocio digitalmente. Desarrollo web, marketing digital y soporte IT especializado para pymes. Presencia online profesional que convierte.",
+    emails: ["contacto@nex-v.com"], // Si tienes email corporativo
+    phoneNumbers: ["+34 912 345 678"], // Si tienes teléfono
+    images: [
+      {
+        url: `${BASE_URL}/images/og-image.jpg`,
+        width: 1200,
+        height: 630,
+        alt: "Nex-v - Transformamos tu negocio digitalmente",
+        type: "image/jpeg",
+      },
+      {
+        url: `${BASE_URL}/images/logo-512x512.jpg`,
+        width: 512,
+        height: 512,
+        alt: "Logo Nex-v - Agencia Digital",
+        type: "image/jpeg",
+      },
+    ],
+  },
+  
+  // 🐦 Twitter Cards mejoradas
+  twitter: {
+    card: "summary_large_image",
+    title: "Nex-v | Soluciones Digitales para Empresas",
+    description: "Agencia digital especializada en desarrollo web, marketing digital y soporte IT para pymes. Presencia online profesional que convierte visitantes en clientes.",
+    creator: "@tu_usuario_twitter", // Cambia por tu usuario real
+    site: "@tu_usuario_twitter",
+    images: [`${BASE_URL}/images/og-image.jpg`],
+  },
+  
+  // 📍 Schema Markup básico (JSON-LD)
+  // Se implementará en componente separado para mejor control
+  
+  // 📞 Prevención de detección automática de contactos
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
+  
+  // 📊 Metadatos adicionales
+  category: "Technology",
+  classification: "Business",
+  rating: "General",
+  referrer: "origin-when-cross-origin",
+  
+  // 💬 Internacionalización
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Nex-v",
+  },
+  
+  // 📱 Mobile optimizations moved to separate export
+  // 🎨 Theme Color moved to separate export
 };
 
 export default function RootLayout({ children }) {
@@ -72,7 +141,21 @@ export default function RootLayout({ children }) {
         <Navbar />
         <main className="flex-grow">{children}</main>
         <Footer />
+        <GoogleAnalytics />
       </body>
     </html>
   );
 }
+
+// 📱 Viewport configuration (separate export as required by Next.js 16)
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
+
+// 🎨 Theme color configuration (separate export)
+export const themeColor = [
+  { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+  { media: "(prefers-color-scheme: dark)", color: "#0f172a" },
+];

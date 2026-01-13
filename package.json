@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seo:audit": "node scripts/seo-audit.js",
+    "seo:monitor": "node scripts/seo-monitor.js",
+    "seo:optimize-images": "next-image-optimizer",
+    "seo:generate-sitemap": "node scripts/generate-sitemap.js",
+    "analytics:debug": "node scripts/ga4-debug.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.78.0",
