@@ -21,7 +21,22 @@ export default function GoogleAnalytics() {
   // 📈 Page view tracking
   useEffect(() => {
     if (pathname) {
-      // Wait for gtag to be loaded
+      // Wait for gtag to be loadedAzureAD+LinsePilapaña@N-11 MINGW64 /c/Nersis/Scripts/DEV/nex-v/web-nexv ((ef70bfa...))
+$ npm run dev
+
+> web-nexv@0.1.0 dev
+> next dev
+
+ ⚠ Port 3000 is in use by process 17112, using available port 3001 instead.
+   ▲ Next.js 16.0.1 (Turbopack)
+   - Local:        http://localhost:3001
+   - Network:      http://192.168.56.1:3001
+   - Environments: .env.local
+
+ ✓ Starting...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+ ⨯ Unable to acquire lock at C:\Nersis\Scripts\DEV\nex-v\web-nexv\.next\dev\lock, is another instance of next dev running?
+   Suggestion: If you intended to restart next dev, terminate the other process, and then try again.
       const url = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
       
       // Send page view event
