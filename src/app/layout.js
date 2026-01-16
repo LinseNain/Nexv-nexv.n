@@ -174,9 +174,3 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 5,
 };
-
-// 🎨 Theme color configuration (separate export)
-export const themeColor = [
-  { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-  { media: "(prefers-color-scheme: dark)", color: "#0f172a" },
-];
