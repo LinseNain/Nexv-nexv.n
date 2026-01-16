@@ -1,6 +1,6 @@
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import GoogleAnalytics from "./components/GoogleAnalytics";
+import GoogleAnalyticsWrapper from "./components/GoogleAnalyticsWrapper";
 import "./globals.css";
 
 // 🚀 SEO AVANZADO PARA GOOGLE SEARCH CONSOLE
@@ -162,7 +162,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <Navbar />
         <main className="flex-grow">{children}</main>
         <Footer />
-        <GoogleAnalytics />
+        <GoogleAnalyticsWrapper />
       </body>
     </html>
   );
