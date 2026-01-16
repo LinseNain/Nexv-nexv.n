@@ -18,14 +18,14 @@
     "@vercel/analytics": "^1.5.0",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.548.0",
-    "next": "16.0.1",
-    "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "next": "^16.1.2",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "eslint": "^9",
-    "eslint-config-next": "16.0.1",
+    "eslint-config-next": "^16.1.2",
     "tailwindcss": "^4"
   }
 }
