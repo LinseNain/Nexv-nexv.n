@@ -1,10 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* 
+/* ─── Marquee ────────────────────────────────────────────────────────────── */
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.marquee {
+  overflow: hidden;
+  background: #1e3a8a;
+  padding: 18px 0;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+.marquee-track {
+  display: inline-flex;
+  gap: 48px;
+  white-space: nowrap;
+  animation: marquee-scroll 40s linear infinite;
+  font-size: 19px;
+  font-weight: 500;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+.marquee-track > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 48px;
+}
+.marquee-track > span::after {
+  content: "✦";
+  color: #93c5fd;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+/*
   🎨 FONDO DE LA PÁGINA → degradado sutil en vez de plano
 */
 body {
