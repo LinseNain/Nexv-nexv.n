@@ -88,10 +88,10 @@ function Hero3D() {
 
     const mat = new THREE.ShaderMaterial({
       uniforms: {
-        uColorA: { value: new THREE.Color(0x1a2454) },
-        uColorB: { value: new THREE.Color(0x2563eb) },
-        uColorC: { value: new THREE.Color(0x93c5fd) },
-        uSize:   { value: 7.5 * renderer.getPixelRatio() },
+        uColorA: { value: new THREE.Color(0x3b82f6) },
+        uColorB: { value: new THREE.Color(0x93c5fd) },
+        uColorC: { value: new THREE.Color(0xffffff) },
+        uSize:   { value: 13 * renderer.getPixelRatio() },
       },
       vertexShader: `
         attribute float random;
@@ -251,6 +251,21 @@ const HomePage = () => {
   });
   const [submitStatus, setSubmitStatus] = useState(null);
   const [expandedSolution, setExpandedSolution] = useState(null);
+
+  // Scroll reveal
+  useEffect(() => {
+    const nodes = document.querySelectorAll('[data-fade]');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('fade-in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -60px 0px' });
+    nodes.forEach(n => io.observe(n));
+    return () => io.disconnect();
+  }, []);
 
   // 📌 Scroll suave
   const scrollToSection = (sectionId) => {
@@ -444,11 +459,13 @@ const HomePage = () => {
         /* ── Secciones: padding vertical en móvil ── */
         @media(max-width:768px){
           .nx-section { padding:56px 0 48px !important; }
+          .nx-proc-header { grid-template-columns:1fr !important; }
+          .nx-garantias-header { grid-template-columns:1fr !important; }
         }
       `}</style>
 <section
   id="inicio"
-  style={{ display: "flex", flexDirection: "column", minHeight: "100vh", overflow: "hidden", background: "linear-gradient(145deg, #faf4ff 0%, #eff6ff 35%, #edfff8 70%, #fff8ed 100%)" }}
+  style={{ display: "flex", flexDirection: "column", minHeight: "100vh", overflow: "hidden", background: "#f8f9ff" }}
 >
   {/* Grid: TEXTO izquierda / CANVAS derecha */}
   <div className="nx-hero-grid">
@@ -519,9 +536,9 @@ const HomePage = () => {
     </div>
 
     {/* ── DERECHA: canvas WebGL a todo lo alto ── */}
-    <div className="nx-hero-canvas">
+    <div className="nx-hero-canvas" style={{ background: "#080c1e", overflow: "hidden" }}>
       <Hero3D />
-      <div style={{ position: "absolute", bottom: 20, right: 20, fontSize: 11, fontFamily: "monospace", color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.1em", pointerEvents: "none", textAlign: "right" }}>
+      <div style={{ position: "absolute", bottom: 20, right: 20, fontSize: 11, fontFamily: "monospace", color: "rgba(147,197,253,0.6)", textTransform: "uppercase", letterSpacing: "0.1em", pointerEvents: "none", textAlign: "right" }}>
         hover → esfera · click → NEX·V
       </div>
     </div>
@@ -546,7 +563,7 @@ const HomePage = () => {
 </section>
 
       {/* ====================== SERVICIOS ====================== */}
-      <section id="quienes-somos" className="nx-section" style={{ padding: "80px 0 72px", background: "#fff", position: "relative" }}>
+      <section id="quienes-somos" className="nx-section" style={{ padding: "80px 0 72px", background: "#fff", position: "relative" }} data-fade>
         <div className="nx-wrap">
 
           <div style={{ fontFamily: "'Courier New', monospace", fontSize: 11, letterSpacing: "0.15em", color: "#94a3b8", textTransform: "uppercase", marginBottom: 24 }}>
@@ -570,6 +587,23 @@ const HomePage = () => {
           </div>
 
           <span id="servicios" style={{ position: "absolute", top: -80 }} />
+
+          {/* Imagen editorial */}
+          <div style={{ margin: "0 0 40px", borderRadius: 12, overflow: "hidden", height: 200, position: "relative" }}>
+            <img
+              src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1400&q=80"
+              alt="Nex-V — estudio digital"
+              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 60%" }}
+            />
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(15,23,42,0.72) 0%, rgba(15,23,42,0.18) 55%)" }} />
+            <div style={{ position: "absolute", bottom: 22, left: 26, color: "#fff" }}>
+              <div style={{ fontFamily: "'Courier New', monospace", fontSize: 9.5, textTransform: "uppercase", letterSpacing: "0.14em", color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>[ Trabajamos contigo · no para ti ]</div>
+              <div style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 26, letterSpacing: "-0.02em", lineHeight: 1.1 }}>
+                Tu negocio crece{" "}
+                <em style={{ color: "#93c5fd" }}>cuando lo trabajamos juntos.</em>
+              </div>
+            </div>
+          </div>
 
           {/* Grid de servicios */}
           {(() => {
@@ -611,7 +645,7 @@ const HomePage = () => {
       </section>
 
       {/* ====================== TRABAJOS ====================== */}
-      <section className="nx-section" style={{ padding: "80px 0 72px", background: "#f8fafc" }}>
+      <section id="trabajos" className="nx-section" style={{ padding: "80px 0 72px", background: "#f8fafc" }} data-fade>
         <div className="nx-wrap">
 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 24 }}>
@@ -663,20 +697,29 @@ const HomePage = () => {
       </section>
 
       {/* ====================== PROCESO ====================== */}
-      <section className="nx-section" style={{ padding: "80px 0 72px", background: "#fff" }}>
+      <section className="nx-section" style={{ padding: "80px 0 72px", background: "#fff" }} data-fade>
         <div className="nx-wrap">
 
           <div style={{ fontFamily: "'Courier New', monospace", fontSize: 11, letterSpacing: "0.15em", color: "#94a3b8", textTransform: "uppercase", marginBottom: 24 }}>
             [ 03 ] Proceso
           </div>
 
-          <div style={{ marginBottom: 48 }}>
-            <h2 style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "clamp(32px,3.6vw,52px)", color: "#0f172a", lineHeight: 1.05, letterSpacing: "-0.02em", margin: "0 0 6px" }}>
-              Nunca has pedido esto antes.
-            </h2>
-            <p style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "clamp(26px,3vw,44px)", fontStyle: "italic", color: "#2563eb", letterSpacing: "-0.02em", margin: 0, textDecoration: "underline", textDecorationColor: "#bfdbfe", textUnderlineOffset: "6px" }}>
-              Normal. Así funciona.
-            </p>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, marginBottom: 48, alignItems: "center" }} className="nx-proc-header">
+            <div>
+              <h2 style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "clamp(32px,3.6vw,52px)", color: "#0f172a", lineHeight: 1.05, letterSpacing: "-0.02em", margin: "0 0 6px" }}>
+                Nunca has pedido esto antes.
+              </h2>
+              <p style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "clamp(26px,3vw,44px)", fontStyle: "italic", color: "#2563eb", letterSpacing: "-0.02em", margin: 0, textDecoration: "underline", textDecorationColor: "#bfdbfe", textUnderlineOffset: "6px" }}>
+                Normal. Así funciona.
+              </p>
+            </div>
+            <div style={{ borderRadius: 12, overflow: "hidden", aspectRatio: "16/9" }}>
+              <img
+                src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=900&q=80"
+                alt="Equipo Nex-V trabajando"
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            </div>
           </div>
 
           <div className="nx-proc-grid">
@@ -705,20 +748,30 @@ const HomePage = () => {
       </section>
 
       {/* ====================== GARANTÍAS ====================== */}
-      <section className="nx-section" style={{ padding: "80px 0 72px", background: "#0f172a" }}>
+      <section className="nx-section" style={{ padding: "80px 0 72px", background: "#0f172a" }} data-fade>
         <div className="nx-wrap">
 
           <div style={{ fontFamily: "'Courier New', monospace", fontSize: 11, letterSpacing: "0.15em", color: "#334155", textTransform: "uppercase", marginBottom: 24 }}>
             [ 04 ] La promesa
           </div>
 
-          <div style={{ marginBottom: 48 }}>
-            <h2 style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "clamp(30px,3.4vw,50px)", color: "#f1f5f9", lineHeight: 1.05, letterSpacing: "-0.02em", margin: "0 0 6px" }}>
-              Sin letra pequeña.
-            </h2>
-            <p style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "clamp(18px,2vw,26px)", fontStyle: "italic", color: "#4b6cb7", margin: 0, letterSpacing: "-0.01em", textDecoration: "underline", textDecorationColor: "#1e3a8a", textUnderlineOffset: "6px" }}>
-              Si en 30 días no estás contento, devolvemos el setup.
-            </p>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 56, marginBottom: 48, alignItems: "center" }} className="nx-garantias-header">
+            <div>
+              <h2 style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "clamp(30px,3.4vw,50px)", color: "#f1f5f9", lineHeight: 1.05, letterSpacing: "-0.02em", margin: "0 0 6px" }}>
+                Sin letra pequeña.
+              </h2>
+              <p style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "clamp(18px,2vw,26px)", fontStyle: "italic", color: "#4b6cb7", margin: 0, letterSpacing: "-0.01em", textDecoration: "underline", textDecorationColor: "#1e3a8a", textUnderlineOffset: "6px" }}>
+                Si en 30 días no ves avance, repetimos el trabajo desde cero — sin coste extra, no es reembolso.
+              </p>
+            </div>
+            <div style={{ borderRadius: 12, overflow: "hidden", aspectRatio: "4/3", position: "relative" }}>
+              <img
+                src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=900&q=80"
+                alt="Compromiso y confianza"
+                style={{ width: "100%", height: "100%", objectFit: "cover", filter: "grayscale(20%)" }}
+              />
+              <div style={{ position: "absolute", inset: 0, background: "rgba(15,23,42,0.35)" }} />
+            </div>
           </div>
 
           <div className="nx-guar-grid">
@@ -751,7 +804,7 @@ const HomePage = () => {
       </section>
 
       {/* ====================== CONTACTO ====================== */}
-      <section id="contacto" style={{ padding: "80px 0 72px", background: "#f8fafc" }}>
+      <section id="contacto" style={{ padding: "80px 0 72px", background: "#f8fafc" }} data-fade>
         <div className="nx-wrap">
 
           {/* Cabecera */}

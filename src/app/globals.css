@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
 @import "tailwindcss";
 
 @tailwind base;
@@ -318,5 +318,117 @@ input:focus-visible {
 .glass-card select {
   transform: none !important;
   scale: 1 !important;
+}
+
+/* ─── Design tokens — página Equipo ──────────────────────────────────────── */
+:root {
+  --ink:      #0c0c0f;
+  --ink-dim:  #4a4a5c;
+  --ink-mute: #9a9ab0;
+  --primary:  #2563eb;
+  --blue-300: #93c5fd;
+  --blue-500: #3b82f6;
+  --blue-900: #1e3a8a;
+  --bg:       #fafafa;
+  --bg-2:     #f2f2f6;
+  --bg-card:  #ffffff;
+  --line:     #e4e4ec;
+  --serif:    'DM Serif Display', Georgia, serif;
+  --mono:     'Space Mono', 'Courier New', monospace;
+}
+
+/* ─── Utilidades editoriales ─────────────────────────────────────────────── */
+.eq-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+@media (max-width: 768px) {
+  .eq-container { padding: 0 20px; }
+}
+
+.eq-display {
+  font-family: var(--serif);
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  color: var(--ink);
+  margin: 0;
+}
+.eq-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-mute);
+  margin-bottom: 20px;
+}
+.eq-mono  { font-family: var(--mono); }
+.eq-mute  { color: var(--ink-mute); }
+.eq-italic { font-style: italic; }
+
+.eq-section {
+  padding: 100px 0;
+  border-top: 1px solid var(--line);
+}
+
+/* Botones equipo */
+.eq-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  border: none;
+}
+.eq-btn-primary {
+  background: var(--ink);
+  color: var(--bg);
+}
+.eq-btn-primary:hover { opacity: 0.82; }
+.eq-btn-dark {
+  background: var(--ink);
+  color: var(--bg);
+}
+.eq-btn-dark:hover { opacity: 0.8; }
+.eq-btn-ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+.eq-btn-ghost:hover { border-color: var(--ink); }
+.eq-btn-lg { padding: 16px 32px; font-size: 15px; }
+
+.eq-hoverable { transition: opacity 0.2s; }
+.eq-hoverable:hover { opacity: 0.85; }
+
+/* ─── Scroll reveal animations ───────────────────────────────────────────── */
+[data-fade] {
+  opacity: 0;
+  transform: translateY(48px);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+[data-fade].fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+[data-fade][data-delay="100"].fade-in { transition-delay: 0.1s; }
+[data-fade][data-delay="150"].fade-in { transition-delay: 0.15s; }
+[data-fade][data-delay="200"].fade-in { transition-delay: 0.2s; }
+[data-fade][data-delay="280"].fade-in { transition-delay: 0.28s; }
+[data-fade][data-delay="360"].fade-in { transition-delay: 0.36s; }
+[data-fade][data-delay="440"].fade-in { transition-delay: 0.44s; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-fade] { opacity: 1; transform: none; transition: none; }
 }
 

@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
@@ -13,6 +15,10 @@ const Navbar = () => {
   }, []);
 
   const scrollToSection = (sectionId) => {
+    if (pathname !== "/") {
+      window.location.href = `/#${sectionId}`;
+      return;
+    }
     const element = document.getElementById(sectionId);
     if (element) {
       const offset = 80;
@@ -26,96 +32,193 @@ const Navbar = () => {
     scrollToSection(sectionId);
   };
 
+  const navLinks = [
+    { id: "inicio",        label: "Inicio" },
+    { id: "quienes-somos", label: "Nosotros" },
+    { id: "servicios",     label: "Servicios" },
+    { id: "trabajos",      label: "Trabajos" },
+    { id: "contacto",      label: "Contacto" },
+  ];
+
+  const linkStyle = (isActive = false) => ({
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+    fontFamily: "'Space Grotesk', ui-sans-serif, sans-serif",
+    fontSize: 14.5,
+    fontWeight: 500,
+    color: isActive ? "#2563eb" : "#111827",
+    letterSpacing: "-0.01em",
+    padding: "4px 0",
+    position: "relative",
+    textDecoration: "none",
+    display: "inline-block",
+  });
+
   return (
     <header
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        isScrolled ? "glass-navbar py-3" : "bg-transparent py-5"
-      }`}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        zIndex: 50,
+        transition: "padding 0.3s ease, box-shadow 0.3s ease",
+        padding: isScrolled ? "10px 0" : "16px 0",
+        background: "rgba(255,255,255,0.85)",
+        backdropFilter: "blur(12px) saturate(1.4)",
+        WebkitBackdropFilter: "blur(12px) saturate(1.4)",
+        borderBottom: "1px solid rgba(229,231,235,0.8)",
+        boxShadow: isScrolled ? "0 2px 20px -4px rgba(0,0,0,0.1)" : "none",
+      }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
-          <button
-            onClick={() => handleNavClick("inicio")}
-            className="focus:outline-none"
-            aria-label="Ir a inicio"
+      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 clamp(16px,4vw,40px)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+
+        {/* Logo */}
+        <button
+          onClick={() => handleNavClick("inicio")}
+          style={{ background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex", alignItems: "center" }}
+          aria-label="Ir a inicio"
+        >
+          <img
+            src="/slogan.svg"
+            alt="Nex-v Logo"
+            style={{ height: 50, width: "auto", transition: "transform 0.25s ease", transform: isScrolled ? "scale(0.93)" : "scale(1)", display: "block" }}
+          />
+        </button>
+
+        {/* Desktop nav */}
+        <nav style={{ display: "flex", alignItems: "center", gap: 28 }} className="nx-desktop-nav">
+          {navLinks.map((item) => (
+            <NavBtn key={item.id} onClick={() => handleNavClick(item.id)}>
+              {item.label}
+            </NavBtn>
+          ))}
+
+          <a
+            href="/equipo"
+            style={{
+              ...linkStyle(pathname === "/equipo"),
+              textDecoration: pathname === "/equipo" ? "underline" : "none",
+              textUnderlineOffset: 4,
+              textDecorationColor: "#2563eb",
+            }}
+            onMouseEnter={e => e.currentTarget.style.color = "#2563eb"}
+            onMouseLeave={e => e.currentTarget.style.color = pathname === "/equipo" ? "#2563eb" : "#111827"}
           >
-            <img
-              src="/slogan.svg"
-              alt="Nex-v Logo"
-              className={`h-17 w-auto transition-transform duration-300 ${
-                isScrolled ? "scale-95" : "scale-100"
-              }`}
-            />
-          </button>
-
-          <nav className="hidden md:flex items-center space-x-6">
-            {[
-              { id: "inicio", label: "Inicio" },
-              { id: "quienes-somos", label: "Quiénes Somos" },
-              { id: "servicios", label: "Servicios" },
-              { id: "contacto", label: "Contacto" },
-            ].map((item) => (
-              <button
-                key={item.id}
-                onClick={() => handleNavClick(item.id)}
-                className="nav-link text-gray-700 hover:text-blue-600 font-medium text-lg transition-colors"
-              >
-                {item.label}
-              </button>
-            ))}
-
-            <button
-              onClick={() => handleNavClick("contacto")}
-              className="hover-smooth bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-full font-medium 
-                         hover:shadow-lg hover:scale-105 active:scale-95 
-                         transition-all duration-300 whitespace-nowrap"
-            >
-              Asesoría Gratuita
-            </button>
-          </nav>
+            Equipo
+          </a>
 
           <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-3 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            aria-label="Toggle navigation menu"
+            onClick={() => handleNavClick("contacto")}
+            style={{
+              fontFamily: "'Space Grotesk', ui-sans-serif, sans-serif",
+              fontSize: 14,
+              fontWeight: 600,
+              background: "linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)",
+              color: "#fff",
+              border: "none",
+              borderRadius: 7,
+              padding: "10px 22px",
+              cursor: "pointer",
+              letterSpacing: "-0.01em",
+              transition: "box-shadow 0.2s, transform 0.2s",
+              whiteSpace: "nowrap",
+              boxShadow: "0 2px 12px rgba(37,99,235,0.35)",
+            }}
+            onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 4px 20px rgba(37,99,235,0.55)"; e.currentTarget.style.transform = "translateY(-1px)"; }}
+            onMouseLeave={e => { e.currentTarget.style.boxShadow = "0 2px 12px rgba(37,99,235,0.35)"; e.currentTarget.style.transform = "none"; }}
           >
-            <div className="w-6 h-0.5 bg-gray-800 mb-1.5"></div>
-            <div className="w-6 h-0.5 bg-gray-800 mb-1.5"></div>
-            <div className="w-6 h-0.5 bg-gray-800"></div>
+            Asesoría Gratuita
           </button>
-        </div>
+        </nav>
+
+        {/* Mobile hamburger */}
+        <button
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          style={{ background: "none", border: "none", cursor: "pointer", padding: 8, display: "none", flexDirection: "column", gap: 5 }}
+          className="nx-hamburger"
+          aria-label="Toggle navigation menu"
+        >
+          <div style={{ width: 22, height: 1.5, background: "#111827", transition: "all 0.2s", transform: isMenuOpen ? "rotate(45deg) translate(4px, 4px)" : "none" }} />
+          <div style={{ width: 22, height: 1.5, background: "#111827", transition: "opacity 0.2s", opacity: isMenuOpen ? 0 : 1 }} />
+          <div style={{ width: 22, height: 1.5, background: "#111827", transition: "all 0.2s", transform: isMenuOpen ? "rotate(-45deg) translate(4px, -4px)" : "none" }} />
+        </button>
       </div>
 
+      {/* Mobile menu */}
       {isMenuOpen && (
-        <nav className="md:hidden glass-navbar animate-slide-down">
-          <div className="px-4 py-4 space-y-2">
-            {[
-              { id: "inicio", label: "Inicio" },
-              { id: "quienes-somos", label: "Quiénes Somos" },
-              { id: "servicios", label: "Servicios" },
-              { id: "contacto", label: "Contacto" },
-            ].map((item) => (
-              <button
-                key={item.id}
-                onClick={() => handleNavClick(item.id)}
-                className="block w-full text-left px-3 py-3 rounded-lg text-gray-700 font-medium text-lg 
-                           hover:bg-blue-50 hover:text-blue-600 transition-all duration-200"
-              >
-                {item.label}
-              </button>
-            ))}
+        <nav style={{ background: "#fff", borderTop: "1px solid #f3f4f6", padding: "8px 16px 16px" }}>
+          {navLinks.map((item) => (
             <button
-              onClick={() => handleNavClick("contacto")}
-              className="w-full mt-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 rounded-full font-medium 
-                         hover:shadow-md transition-all duration-300"
+              key={item.id}
+              onClick={() => handleNavClick(item.id)}
+              style={{ display: "block", width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer", fontFamily: "'Space Grotesk', ui-sans-serif, sans-serif", fontSize: 16, fontWeight: 500, color: "#111827", padding: "12px 8px", borderBottom: "1px solid #f3f4f6", letterSpacing: "-0.01em" }}
             >
-              Asesoría Gratuita
+              {item.label}
             </button>
-          </div>
+          ))}
+          <a
+            href="/equipo"
+            onClick={() => setIsMenuOpen(false)}
+            style={{ display: "block", fontFamily: "'Space Grotesk', ui-sans-serif, sans-serif", fontSize: 16, fontWeight: pathname === "/equipo" ? 600 : 500, color: pathname === "/equipo" ? "#2563eb" : "#111827", padding: "12px 8px", borderBottom: "1px solid #f3f4f6", textDecoration: "none", letterSpacing: "-0.01em" }}
+          >
+            Equipo
+          </a>
+          <button
+            onClick={() => { setIsMenuOpen(false); scrollToSection("contacto"); }}
+            style={{ display: "block", width: "100%", marginTop: 12, fontFamily: "'Space Grotesk', ui-sans-serif, sans-serif", fontSize: 15, fontWeight: 600, background: "linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)", color: "#fff", border: "none", borderRadius: 7, padding: "13px 20px", cursor: "pointer", letterSpacing: "-0.01em", boxShadow: "0 4px 14px rgba(37,99,235,0.4)" }}
+          >
+            Asesoría Gratuita
+          </button>
         </nav>
       )}
+
+      <style>{`
+        @media (max-width: 900px) {
+          .nx-desktop-nav { display: none !important; }
+          .nx-hamburger { display: flex !important; }
+        }
+      `}</style>
     </header>
   );
 };
+
+function NavBtn({ children, onClick }) {
+  const [hovered, setHovered] = React.useState(false);
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        background: "none",
+        border: "none",
+        cursor: "pointer",
+        fontFamily: "'Space Grotesk', ui-sans-serif, sans-serif",
+        fontSize: 14.5,
+        fontWeight: 500,
+        color: hovered ? "#2563eb" : "#111827",
+        WebkitTextFillColor: hovered ? "#2563eb" : "#111827",
+        letterSpacing: "-0.01em",
+        padding: "4px 0",
+        position: "relative",
+        transition: "color 0.18s",
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {children}
+      <span style={{
+        position: "absolute",
+        bottom: -2,
+        left: 0,
+        height: 2,
+        width: hovered ? "100%" : "0%",
+        background: "#2563eb",
+        transition: "width 0.25s cubic-bezier(0.16,1,0.3,1)",
+        borderRadius: 1,
+      }} />
+    </button>
+  );
+}
 
 export default Navbar;
