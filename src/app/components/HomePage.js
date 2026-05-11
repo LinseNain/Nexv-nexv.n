@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from "react";
-import * as THREE from "three";
 
 /* ─── Three.js helpers ───────────────────────────────────────────────────── */
 function sampleTextPoints(text, count) {
@@ -38,154 +37,157 @@ function Hero3D() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const rect = canvas.getBoundingClientRect();
-    let W = rect.width || canvas.offsetWidth;
-    let H = rect.height || canvas.offsetHeight;
+    let cleanupFn = null;
 
-    const scene    = new THREE.Scene();
-    const camera   = new THREE.PerspectiveCamera(50, W / H, 0.1, 1000);
-    camera.position.z = 7;
+    import('three').then((THREE) => {
+      const rect = canvas.getBoundingClientRect();
+      let W = rect.width || canvas.offsetWidth;
+      let H = rect.height || canvas.offsetHeight;
 
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-    renderer.setSize(W, H, false);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      const scene    = new THREE.Scene();
+      const camera   = new THREE.PerspectiveCamera(50, W / H, 0.1, 1000);
+      camera.position.z = 7;
 
-    const N = 4000;
-    const geo      = new THREE.BufferGeometry();
-    const positions = new Float32Array(N * 3);
-    const shapes   = [new Float32Array(N * 3), new Float32Array(N * 3), new Float32Array(N * 3)];
-    const randoms  = new Float32Array(N);
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      renderer.setSize(W, H, false);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Forma 0: torus knot (idle)
-    for (let i = 0; i < N; i++) {
-      const t = (i / N) * Math.PI * 2 * 3;
-      const r = 0.8 + 0.3 * Math.cos(3 * t);
-      shapes[0][i*3]   = r * Math.cos(2*t) * 2 + (Math.random()-0.5)*0.15;
-      shapes[0][i*3+1] = r * Math.sin(2*t) * 2 + (Math.random()-0.5)*0.15;
-      shapes[0][i*3+2] = 0.6 * Math.sin(3*t) * 2 + (Math.random()-0.5)*0.15;
-      randoms[i] = Math.random();
-    }
-    // Forma 1: esfera (hover)
-    for (let i = 0; i < N; i++) {
-      const u = Math.random() * Math.PI * 2;
-      const v = Math.acos(2 * Math.random() - 1);
-      const R = 2.4;
-      shapes[1][i*3]   = R * Math.sin(v) * Math.cos(u);
-      shapes[1][i*3+1] = R * Math.sin(v) * Math.sin(u);
-      shapes[1][i*3+2] = R * Math.cos(v);
-    }
-    // Forma 2: texto NEX·V (click)
-    const fillText = () => {
-      const t = sampleTextPoints("NEX·V", N);
-      for (let i = 0; i < N*3; i++) shapes[2][i] = t[i];
-    };
-    fillText();
-    if (document.fonts?.ready) document.fonts.ready.then(fillText);
+      const N = 4000;
+      const geo      = new THREE.BufferGeometry();
+      const positions = new Float32Array(N * 3);
+      const shapes   = [new Float32Array(N * 3), new Float32Array(N * 3), new Float32Array(N * 3)];
+      const randoms  = new Float32Array(N);
 
-    for (let i = 0; i < N*3; i++) positions[i] = shapes[0][i];
-    geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    geo.setAttribute("random",   new THREE.BufferAttribute(randoms,   1));
+      for (let i = 0; i < N; i++) {
+        const t = (i / N) * Math.PI * 2 * 3;
+        const r = 0.8 + 0.3 * Math.cos(3 * t);
+        shapes[0][i*3]   = r * Math.cos(2*t) * 2 + (Math.random()-0.5)*0.15;
+        shapes[0][i*3+1] = r * Math.sin(2*t) * 2 + (Math.random()-0.5)*0.15;
+        shapes[0][i*3+2] = 0.6 * Math.sin(3*t) * 2 + (Math.random()-0.5)*0.15;
+        randoms[i] = Math.random();
+      }
+      for (let i = 0; i < N; i++) {
+        const u = Math.random() * Math.PI * 2;
+        const v = Math.acos(2 * Math.random() - 1);
+        const R = 2.4;
+        shapes[1][i*3]   = R * Math.sin(v) * Math.cos(u);
+        shapes[1][i*3+1] = R * Math.sin(v) * Math.sin(u);
+        shapes[1][i*3+2] = R * Math.cos(v);
+      }
+      const fillText = () => {
+        const t = sampleTextPoints("NEX·V", N);
+        for (let i = 0; i < N*3; i++) shapes[2][i] = t[i];
+      };
+      fillText();
+      if (document.fonts?.ready) document.fonts.ready.then(fillText);
 
-    const mat = new THREE.ShaderMaterial({
-      uniforms: {
-        uColorA: { value: new THREE.Color(0x3b82f6) },
-        uColorB: { value: new THREE.Color(0x93c5fd) },
-        uColorC: { value: new THREE.Color(0xffffff) },
-        uSize:   { value: 13 * renderer.getPixelRatio() },
-      },
-      vertexShader: `
-        attribute float random;
-        varying float vRandom;
-        uniform float uSize;
-        void main() {
-          vec4 mv = modelViewMatrix * vec4(position, 1.0);
-          gl_PointSize = uSize * (1.0 / -mv.z) * (0.6 + random * 0.8);
-          gl_Position = projectionMatrix * mv;
-          vRandom = random;
+      for (let i = 0; i < N*3; i++) positions[i] = shapes[0][i];
+      geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+      geo.setAttribute("random",   new THREE.BufferAttribute(randoms,   1));
+
+      const mat = new THREE.ShaderMaterial({
+        uniforms: {
+          uColorA: { value: new THREE.Color(0x3b82f6) },
+          uColorB: { value: new THREE.Color(0x93c5fd) },
+          uColorC: { value: new THREE.Color(0xffffff) },
+          uSize:   { value: 13 * renderer.getPixelRatio() },
+        },
+        vertexShader: `
+          attribute float random;
+          varying float vRandom;
+          uniform float uSize;
+          void main() {
+            vec4 mv = modelViewMatrix * vec4(position, 1.0);
+            gl_PointSize = uSize * (1.0 / -mv.z) * (0.6 + random * 0.8);
+            gl_Position = projectionMatrix * mv;
+            vRandom = random;
+          }
+        `,
+        fragmentShader: `
+          varying float vRandom;
+          uniform vec3 uColorA, uColorB, uColorC;
+          void main() {
+            vec2 c = gl_PointCoord - 0.5;
+            if (length(c) > 0.5) discard;
+            float alpha = smoothstep(0.5, 0.08, length(c));
+            vec3 color = mix(uColorA, uColorB, smoothstep(0.3, 0.7, vRandom));
+            color = mix(color, uColorC, step(0.92, vRandom));
+            gl_FragColor = vec4(color, alpha);
+          }
+        `,
+        transparent: true,
+        depthWrite: false,
+      });
+
+      const pts = new THREE.Points(geo, mat);
+      scene.add(pts);
+
+      let current = 0, frame = 0, rafId;
+
+      const onMove   = e => {
+        const r = canvas.getBoundingClientRect();
+        stateRef.current.tx = ((e.clientX - r.left) / r.width  - 0.5) * 2;
+        stateRef.current.ty = ((e.clientY - r.top)  / r.height - 0.5) * 2;
+      };
+      const onEnter  = () => { stateRef.current.target = 1; };
+      const onLeave  = () => { stateRef.current.target = 0; };
+      const onClick  = () => { stateRef.current.target = stateRef.current.target === 2 ? 1 : 2; };
+
+      canvas.addEventListener("mousemove",  onMove);
+      canvas.addEventListener("mouseenter", onEnter);
+      canvas.addEventListener("mouseleave", onLeave);
+      canvas.addEventListener("click",      onClick);
+
+      const animate = () => {
+        frame++;
+        const s = stateRef.current;
+        s.mx += (s.tx - s.mx) * 0.05;
+        s.my += (s.ty - s.my) * 0.05;
+        current += (s.target - current) * 0.05;
+
+        const lo = Math.floor(current);
+        const hi = Math.min(2, lo + 1);
+        const k  = current - lo;
+        const pos = pts.geometry.attributes.position.array;
+        const A = shapes[lo], B = shapes[hi];
+        for (let i = 0; i < N; i++) {
+          const i3 = i * 3;
+          const w  = Math.sin(frame * 0.02 + i * 0.1) * 0.04;
+          pos[i3]   = A[i3]   * (1-k) + B[i3]   * k + w;
+          pos[i3+1] = A[i3+1] * (1-k) + B[i3+1] * k + Math.cos(frame * 0.02 + i * 0.1) * 0.04;
+          pos[i3+2] = A[i3+2] * (1-k) + B[i3+2] * k;
         }
-      `,
-      fragmentShader: `
-        varying float vRandom;
-        uniform vec3 uColorA, uColorB, uColorC;
-        void main() {
-          vec2 c = gl_PointCoord - 0.5;
-          if (length(c) > 0.5) discard;
-          float alpha = smoothstep(0.5, 0.08, length(c));
-          vec3 color = mix(uColorA, uColorB, smoothstep(0.3, 0.7, vRandom));
-          color = mix(color, uColorC, step(0.92, vRandom));
-          gl_FragColor = vec4(color, alpha);
-        }
-      `,
-      transparent: true,
-      depthWrite: false,
+        pts.geometry.attributes.position.needsUpdate = true;
+
+        const isText = current > 1.5;
+        pts.rotation.y = (isText ? 0 : frame * 0.002) + s.mx * (isText ? 0.08 : 0.3);
+        pts.rotation.x = s.my * (isText ? 0.05 : 0.3);
+        renderer.render(scene, camera);
+        rafId = requestAnimationFrame(animate);
+      };
+      animate();
+
+      const onResize = () => {
+        const r = canvas.getBoundingClientRect();
+        W = r.width; H = r.height;
+        camera.aspect = W / H;
+        camera.updateProjectionMatrix();
+        renderer.setSize(W, H, false);
+      };
+      window.addEventListener("resize", onResize);
+
+      cleanupFn = () => {
+        cancelAnimationFrame(rafId);
+        canvas.removeEventListener("mousemove",  onMove);
+        canvas.removeEventListener("mouseenter", onEnter);
+        canvas.removeEventListener("mouseleave", onLeave);
+        canvas.removeEventListener("click",      onClick);
+        window.removeEventListener("resize",     onResize);
+        renderer.dispose(); geo.dispose(); mat.dispose();
+      };
     });
 
-    const pts = new THREE.Points(geo, mat);
-    scene.add(pts);
-
-    let current = 0, frame = 0, rafId;
-
-    const onMove   = e => {
-      const r = canvas.getBoundingClientRect();
-      stateRef.current.tx = ((e.clientX - r.left) / r.width  - 0.5) * 2;
-      stateRef.current.ty = ((e.clientY - r.top)  / r.height - 0.5) * 2;
-    };
-    const onEnter  = () => { stateRef.current.target = 1; };
-    const onLeave  = () => { stateRef.current.target = 0; };
-    const onClick  = () => { stateRef.current.target = stateRef.current.target === 2 ? 1 : 2; };
-
-    canvas.addEventListener("mousemove",  onMove);
-    canvas.addEventListener("mouseenter", onEnter);
-    canvas.addEventListener("mouseleave", onLeave);
-    canvas.addEventListener("click",      onClick);
-
-    const animate = () => {
-      frame++;
-      const s = stateRef.current;
-      s.mx += (s.tx - s.mx) * 0.05;
-      s.my += (s.ty - s.my) * 0.05;
-      current += (s.target - current) * 0.05;
-
-      const lo = Math.floor(current);
-      const hi = Math.min(2, lo + 1);
-      const k  = current - lo;
-      const pos = pts.geometry.attributes.position.array;
-      const A = shapes[lo], B = shapes[hi];
-      for (let i = 0; i < N; i++) {
-        const i3 = i * 3;
-        const w  = Math.sin(frame * 0.02 + i * 0.1) * 0.04;
-        pos[i3]   = A[i3]   * (1-k) + B[i3]   * k + w;
-        pos[i3+1] = A[i3+1] * (1-k) + B[i3+1] * k + Math.cos(frame * 0.02 + i * 0.1) * 0.04;
-        pos[i3+2] = A[i3+2] * (1-k) + B[i3+2] * k;
-      }
-      pts.geometry.attributes.position.needsUpdate = true;
-
-      const isText = current > 1.5;
-      pts.rotation.y = (isText ? 0 : frame * 0.002) + s.mx * (isText ? 0.08 : 0.3);
-      pts.rotation.x = s.my * (isText ? 0.05 : 0.3);
-      renderer.render(scene, camera);
-      rafId = requestAnimationFrame(animate);
-    };
-    animate();
-
-    const onResize = () => {
-      const r = canvas.getBoundingClientRect();
-      W = r.width; H = r.height;
-      camera.aspect = W / H;
-      camera.updateProjectionMatrix();
-      renderer.setSize(W, H, false);
-    };
-    window.addEventListener("resize", onResize);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      canvas.removeEventListener("mousemove",  onMove);
-      canvas.removeEventListener("mouseenter", onEnter);
-      canvas.removeEventListener("mouseleave", onLeave);
-      canvas.removeEventListener("click",      onClick);
-      window.removeEventListener("resize",     onResize);
-      renderer.dispose(); geo.dispose(); mat.dispose();
-    };
+    return () => { if (cleanupFn) cleanupFn(); };
   }, []);
 
   return (
@@ -493,7 +495,7 @@ const HomePage = () => {
         </h1>
 
         {/* Descripción */}
-        <p style={{ fontFamily: "'Space Grotesk', ui-sans-serif, sans-serif", fontSize: 15.5, color: "#64748b", lineHeight: 1.75, margin: "0 0 32px", maxWidth: 380, paddingLeft: "clamp(10px,2vw,24px)" }}>
+        <p style={{ fontFamily: "'Space Grotesk', ui-sans-serif, sans-serif", fontSize: 15.5, color: "#111111", fontWeight: 600, lineHeight: 1.75, margin: "0 0 32px", maxWidth: 380, paddingLeft: "clamp(10px,2vw,24px)" }}>
           Somos un estudio pequeño que construye piezas digitales serias para negocios reales. Webs rápidas, campañas que venden, agentes de IA que atienden mientras duermes.
         </p>
 
@@ -579,7 +581,7 @@ const HomePage = () => {
 
           {/* Disclaimer */}
           <div style={{ maxWidth: 540, marginBottom: 48, borderLeft: "2px solid #2563eb", paddingLeft: 20 }}>
-            <p style={{ fontFamily: "'Space Grotesk', ui-sans-serif, sans-serif", fontSize: 15, color: "#475569", lineHeight: 1.75, margin: 0 }}>
+            <p style={{ fontFamily: "'Space Grotesk', ui-sans-serif, sans-serif", fontSize: 15, color: "#111111", fontWeight: 600, lineHeight: 1.75, margin: 0 }}>
               Una web no trae clientes sola. El marketing no regala resultados. Hablas con quien hace el trabajo —{" "}
               <strong style={{ color: "#0f172a", fontWeight: 700 }}>sin comerciales, sin letra pequeña, sin permanencia</strong>.
               Lo que construimos es la infraestructura que hace que tu esfuerzo funcione online.
@@ -593,6 +595,8 @@ const HomePage = () => {
             <img
               src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1400&q=80"
               alt="Nex-V — estudio digital"
+              loading="lazy"
+              decoding="async"
               style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 60%" }}
             />
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(15,23,42,0.72) 0%, rgba(15,23,42,0.18) 55%)" }} />
@@ -623,7 +627,7 @@ const HomePage = () => {
                       <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", padding: "3px 10px", borderRadius: 100, background: s.dark ? "rgba(255,255,255,0.07)" : s.tagBg, color: s.dark ? "#a5b4fc" : s.tagTx }}>{s.tag}</span>
                     </div>
                     <h3 style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 24, color: s.dark ? "#f1f5f9" : "#0f172a", letterSpacing: "-0.01em", lineHeight: 1.2, margin: "0 0 10px" }}>{s.name}</h3>
-                    <p style={{ fontFamily: "'Space Grotesk', ui-sans-serif, sans-serif", fontSize: 14, color: s.dark ? "#64748b" : "#475569", lineHeight: 1.7, margin: 0, flexGrow: 1, paddingBottom: 20 }}>{s.desc}</p>
+                    <p style={{ fontFamily: "'Space Grotesk', ui-sans-serif, sans-serif", fontSize: 14, color: s.dark ? "#94a3b8" : "#111111", fontWeight: 600, lineHeight: 1.7, margin: 0, flexGrow: 1, paddingBottom: 20 }}>{s.desc}</p>
                     <div style={{ borderTop: `1px solid ${s.dark ? "rgba(255,255,255,0.07)" : "#f1f5f9"}`, paddingTop: 14 }}>
                       <div style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 20, fontWeight: 400, color: s.dark ? "#f1f5f9" : "#0f172a", letterSpacing: "-0.01em" }}>{s.price}</div>
                       <div style={{ fontFamily: "'Courier New', monospace", fontSize: 10, color: s.dark ? "#334155" : "#94a3b8", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 3 }}>{s.sub}</div>
@@ -668,6 +672,8 @@ const HomePage = () => {
               <img
                 src="https://images.unsplash.com/photo-1490750967868-88df5691cc31?w=900&auto=format&fit=crop&q=80"
                 alt="Flor del Valle — floristería Madrid"
+                loading="lazy"
+                decoding="async"
                 style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
               />
               {/* Badge métrica sobre la imagen */}
@@ -682,7 +688,7 @@ const HomePage = () => {
               <div style={{ fontFamily: "'Courier New', monospace", fontSize: 10.5, color: "#94a3b8", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 14 }}>Caso 01</div>
               <h3 style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 36, color: "#0f172a", letterSpacing: "-0.02em", lineHeight: 1.05, margin: "0 0 4px" }}>Flor del Valle</h3>
               <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11.5, color: "#94a3b8", margin: "0 0 22px", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 700 }}>Floristería · Madrid</p>
-              <p style={{ fontFamily: "'Space Grotesk', ui-sans-serif, sans-serif", fontSize: 15, color: "#475569", lineHeight: 1.8, margin: "0 0 28px" }}>
+              <p style={{ fontFamily: "'Space Grotesk', ui-sans-serif, sans-serif", fontSize: 15, color: "#111111", fontWeight: 600, lineHeight: 1.8, margin: "0 0 28px" }}>
                 Llegaron queriendo <strong style={{ color: "#0f172a" }}>una web</strong>. Terminamos haciéndoles la web, las redes, las tarjetas de visita y la ropa corporativa. Porque cuando algo encaja, <em>se nota en todo</em>.
               </p>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -717,6 +723,8 @@ const HomePage = () => {
               <img
                 src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=900&q=80"
                 alt="Equipo Nex-V trabajando"
+                loading="lazy"
+                decoding="async"
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
             </div>
@@ -736,7 +744,7 @@ const HomePage = () => {
                   <span style={{ fontFamily: "'Courier New', monospace", fontSize: 11, color: step.accent, letterSpacing: "0.08em", fontWeight: 700 }}>{step.n}</span>
                 </div>
                 <h3 style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 21, color: i === 0 ? "#f1f5f9" : "#0f172a", lineHeight: 1.2, margin: "0 0 14px", letterSpacing: "-0.01em" }}>{step.title}</h3>
-                <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, color: i === 0 ? "#64748b" : "#475569", lineHeight: 1.7, margin: 0, flexGrow: 1 }}>{step.body}</p>
+                <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, color: i === 0 ? "#94a3b8" : "#111111", fontWeight: 600, lineHeight: 1.7, margin: 0, flexGrow: 1 }}>{step.body}</p>
                 <div style={{ marginTop: 20, paddingTop: 14, borderTop: `1px solid ${i === 0 ? "rgba(255,255,255,0.06)" : "#f1f5f9"}` }}>
                   <span style={{ fontFamily: "'Courier New', monospace", fontSize: 10, color: i === 0 ? "#334155" : "#cbd5e1", letterSpacing: "0.1em", textTransform: "uppercase" }}>{step.when}</span>
                 </div>
@@ -768,6 +776,8 @@ const HomePage = () => {
               <img
                 src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=900&q=80"
                 alt="Compromiso y confianza"
+                loading="lazy"
+                decoding="async"
                 style={{ width: "100%", height: "100%", objectFit: "cover", filter: "grayscale(20%)" }}
               />
               <div style={{ position: "absolute", inset: 0, background: "rgba(15,23,42,0.35)" }} />
@@ -787,7 +797,7 @@ const HomePage = () => {
                   <span style={{ fontFamily: "'Courier New', monospace", fontSize: 10, color: "#334155", letterSpacing: "0.15em" }}>Garantía {g.num}</span>
                 </div>
                 <h3 style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 26, color: "#f1f5f9", letterSpacing: "-0.01em", lineHeight: 1.15, margin: "0 0 12px", textDecoration: "underline", textDecorationColor: "#1e3a8a", textUnderlineOffset: "5px" }}>{g.title}</h3>
-                <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, color: "#64748b", lineHeight: 1.75, margin: 0 }}>{g.body}</p>
+                <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, color: "#94a3b8", fontWeight: 600, lineHeight: 1.75, margin: 0 }}>{g.body}</p>
               </div>
             ))}
           </div>
@@ -820,7 +830,7 @@ const HomePage = () => {
                 resolvemos eso primero.
               </p>
             </div>
-            <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 16, color: "#475569", lineHeight: 1.75, margin: 0 }}>
+            <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 16, color: "#111111", fontWeight: 600, lineHeight: 1.75, margin: 0 }}>
               No hace falta tenerlo todo claro. Con que nos cuentes dónde estás y qué te gustaría mejorar,{" "}
               <strong style={{ color: "#0f172a" }}>te decimos lo que haríamos nosotros</strong>. Sin compromiso.
             </p>
@@ -967,7 +977,7 @@ const HomePage = () => {
                   </div>
                   <div>
                     <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>Horario</div>
-                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, color: "#475569" }}>Lun – Vie · 9:00 – 18:00</div>
+                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, color: "#111111", fontWeight: 600 }}>Lun – Vie · 9:00 – 18:00</div>
                     <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, color: "#94a3b8", marginTop: 2 }}>Madrid / Remoto</div>
                   </div>
                 </div>
@@ -985,7 +995,7 @@ const HomePage = () => {
                 ].map(([sym, txt], i) => (
                   <div key={i} style={{ display: "flex", alignItems: "center", gap: 14 }}>
                     <span style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 20, color: "#2563eb", flexShrink: 0, width: 24, textAlign: "center" }}>{sym}</span>
-                    <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, color: "#475569", lineHeight: 1.4 }}>{txt}</span>
+                    <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, color: "#111111", fontWeight: 600, lineHeight: 1.4 }}>{txt}</span>
                   </div>
                 ))}
               </div>
@@ -995,7 +1005,7 @@ const HomePage = () => {
 
               {/* Texto honesto */}
               <div style={{ borderLeft: "2px solid #e2e8f0", paddingLeft: 16 }}>
-                <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 13.5, color: "#94a3b8", lineHeight: 1.7, margin: 0, fontStyle: "italic" }}>
+                <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 13.5, color: "#555555", fontWeight: 600, lineHeight: 1.7, margin: 0, fontStyle: "italic" }}>
                   "Si creemos que no somos lo que necesitas, te lo decimos y si podemos te mandamos a alguien que sí lo sea."
                 </p>
               </div>

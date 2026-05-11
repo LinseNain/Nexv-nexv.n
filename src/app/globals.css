@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
 @import "tailwindcss";
 
 @tailwind base;
@@ -49,6 +48,12 @@ body {
   font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Párrafos de contenido: legibles sin esfuerzo sobre fondos claros */
+p {
+  font-weight: 600;
+  color: #111111;
 }
 
 /* 
@@ -412,14 +417,14 @@ input:focus-visible {
 /* ─── Scroll reveal animations ───────────────────────────────────────────── */
 [data-fade] {
   opacity: 0;
-  transform: translateY(48px);
-  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
   will-change: opacity, transform;
 }
 [data-fade].fade-in {
   opacity: 1;
   transform: translateY(0);
+  will-change: auto;
 }
 [data-fade][data-delay="100"].fade-in { transition-delay: 0.1s; }
 [data-fade][data-delay="150"].fade-in { transition-delay: 0.15s; }

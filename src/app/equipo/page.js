@@ -1,31 +1,25 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const TEAM = [
   {
-    id: "miembro-1",
-    name: "Tu Nombre",
-    role: "Co-fundador · Diseño & Frontend",
-    bio: "Diseño piezas digitales que cargan rápido y convierten. 6 años haciendo webs y producto para PYMES y startups. Antes en agencia, ahora por mi cuenta.",
-    photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=900&q=80",
-    skills: ["Figma", "React", "Next.js", "Webflow", "CSS", "UX"],
-    proyectos: ["12 webs entregadas", "5 productos SaaS", "3 brand systems"],
-    linkedin: "#",
-    email: "tu@nex-v.com",
-    quote: "Si la web tarda 3 segundos en cargar, ya la has perdido.",
+    id: "linse",
+    name: "Linse",
+    role: "Fundadora · Desarrollo Full Stack · Sistemas · Diseño Web",
+    bio: "Técnica en Sistemas Microinformáticos y Redes, con formación en desarrollo full stack y ciberseguridad. Construyo desde el servidor hasta la interfaz: infraestructura, backend, frontend, integración de APIs y automatizaciones. Trabajo con IA como herramienta real para ir más rápido y entregar mejor.",
+    photo: "/Linse.png",
+    skills: ["FreeBSD", "Apache", "PHP", "Python", "MariaDB", "React", "HTML/CSS", "APIs REST", "Figma", "Git", "Microsoft 365 API"],
+    linkedin: "https://es.linkedin.com/in/linsenaine",
   },
   {
-    id: "miembro-2",
-    name: "Tu Socio/a",
-    role: "Co-fundador · Marketing & IA",
-    bio: "Llevo Meta Ads desde 2019. Especialista en agentes de IA aplicados a negocio: WhatsApp bots, automatizaciones, embeddings. Pragmático sobre lo que vale y lo que no.",
-    photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=900&q=80",
-    skills: ["Meta Ads", "Google Ads", "n8n", "OpenAI API", "Make", "GA4"],
-    proyectos: ["+200k€ gestionados en ads", "8 agentes IA en prod", "2.8× ROAS medio"],
+    id: "ezra",
+    name: "Ezra",
+    role: "Cofundador · Marketing Digital · Meta Ads · Diseño",
+    bio: "Especialista en marketing digital y diseño orientado a resultados. Gestiono campañas de Meta Ads, creo identidades visuales y materiales que convierten. Me encargo de que cada proyecto tenga la imagen y la visibilidad que merece.",
+    photo: "/Ezra.png",
+    skills: ["Meta Ads", "Instagram Ads", "Canva", "Figma", "Branding", "Copywriting", "Google Analytics", "Email Marketing"],
     linkedin: "#",
-    email: "socio@nex-v.com",
-    quote: "Un buen agente IA ahorra 30 horas al mes. Punto.",
   },
 ];
 
@@ -43,6 +37,7 @@ function HeroEquipo() {
     <section style={{ padding: "80px 0 100px", background: "var(--bg)" }}>
       <div className="eq-container">
         <div
+          data-fade
           style={{
             display: "flex",
             justifyContent: "space-between",
@@ -62,7 +57,7 @@ function HeroEquipo() {
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "end" }}>
-          <div>
+          <div data-fade data-delay="100">
             <div className="eq-label">[ Quiénes somos ]</div>
             <h1
               className="eq-display"
@@ -74,11 +69,14 @@ function HeroEquipo() {
             </h1>
           </div>
           <div
+            data-fade
+            data-delay="200"
             style={{
               maxWidth: 480,
               fontSize: 19,
+              fontWeight: 600,
               lineHeight: 1.5,
-              color: "var(--ink-dim)",
+              color: "#111111",
               paddingBottom: 40,
               alignSelf: "end",
             }}
@@ -97,10 +95,16 @@ function TeamCards() {
   return (
     <section className="eq-section" style={{ paddingTop: 0, borderTop: "none", background: "var(--bg)" }}>
       <div className="eq-container">
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: 32 }}>
+        <style>{`
+          .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+          @media (max-width: 700px) { .team-grid { grid-template-columns: 1fr; } }
+        `}</style>
+        <div className="team-grid">
           {TEAM.map((m, i) => (
             <div
               key={m.id}
+              data-fade
+              data-delay={i === 0 ? undefined : "150"}
               className="eq-hoverable"
               style={{
                 background: "var(--bg-card)",
@@ -111,129 +115,71 @@ function TeamCards() {
                 flexDirection: "column",
               }}
             >
-              <div
-                style={{
-                  aspectRatio: "4 / 3",
-                  backgroundImage: `url(${m.photo})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  position: "relative",
-                }}
-              >
-                <div
-                  style={{
-                    position: "absolute",
-                    top: 16,
-                    left: 16,
-                    padding: "6px 12px",
-                    background: "var(--bg)",
-                    borderRadius: 100,
-                    fontFamily: "var(--mono)",
-                    fontSize: 10,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.1em",
-                    color: "var(--ink)",
-                  }}
-                >
+              {/* Foto */}
+              <div style={{ aspectRatio: "4 / 3", position: "relative", overflow: "hidden" }}>
+                <img
+                  src={m.photo}
+                  alt={`${m.name} — Nex-V`}
+                  loading="lazy"
+                  decoding="async"
+                  style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" }}
+                />
+                <div style={{
+                  position: "absolute", top: 16, left: 16,
+                  padding: "6px 12px", background: "var(--bg)", borderRadius: 100,
+                  fontFamily: "var(--mono)", fontSize: 10, textTransform: "uppercase",
+                  letterSpacing: "0.1em", color: "var(--ink)",
+                }}>
                   /0{i + 1}
                 </div>
               </div>
 
+              {/* Contenido */}
               <div style={{ padding: 36, display: "flex", flexDirection: "column", gap: 24, flex: 1 }}>
+
                 <div>
                   <div className="eq-display" style={{ fontSize: 40, lineHeight: 1 }}>{m.name}</div>
-                  <div
-                    className="eq-mono"
-                    style={{
-                      fontSize: 12,
-                      color: "var(--primary)",
-                      marginTop: 8,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.1em",
-                    }}
-                  >
+                  <div className="eq-mono" style={{
+                    fontSize: 11, color: "var(--primary)", marginTop: 8,
+                    textTransform: "uppercase", letterSpacing: "0.1em", lineHeight: 1.6,
+                  }}>
                     {m.role}
                   </div>
                 </div>
 
-                <p style={{ fontSize: 15, lineHeight: 1.6, color: "var(--ink-dim)", margin: 0 }}>{m.bio}</p>
+                <p style={{ fontSize: 15, fontWeight: 600, lineHeight: 1.65, color: "#111111", margin: 0 }}>
+                  {m.bio}
+                </p>
 
-                <blockquote
-                  style={{
-                    fontFamily: "var(--serif)",
-                    fontSize: 20,
-                    fontStyle: "italic",
-                    lineHeight: 1.3,
-                    color: "var(--ink)",
-                    paddingLeft: 18,
-                    borderLeft: "2px solid var(--primary)",
-                    margin: 0,
-                  }}
-                >
-                  "{m.quote}"
-                </blockquote>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   <div className="eq-mono eq-mute" style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.12em" }}>
                     Stack
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                     {m.skills.map((s) => (
-                      <span
-                        key={s}
-                        className="eq-mono"
-                        style={{
-                          fontSize: 11,
-                          padding: "5px 11px",
-                          border: "1px solid var(--line)",
-                          borderRadius: 100,
-                          color: "var(--ink-dim)",
-                        }}
-                      >
+                      <span key={s} className="eq-mono" style={{
+                        fontSize: 11, padding: "5px 12px",
+                        border: "1px solid var(--line)", borderRadius: 100,
+                        color: "var(--ink)", background: "var(--bg-2)",
+                      }}>
                         {s}
                       </span>
                     ))}
                   </div>
                 </div>
 
-                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  <div className="eq-mono eq-mute" style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.12em" }}>
-                    Track record
-                  </div>
-                  {m.proyectos.map((p) => (
-                    <div key={p} style={{ fontFamily: "var(--serif)", fontSize: 18, color: "var(--ink)" }}>
-                      · {p}
-                    </div>
-                  ))}
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    gap: 10,
-                    marginTop: "auto",
-                    paddingTop: 16,
-                    borderTop: "1px solid var(--line)",
-                  }}
-                >
-                  <a
-                    href={m.linkedin}
-                    className="eq-btn eq-btn-dark"
-                    style={{ flex: 1, justifyContent: "center" }}
-                  >
+                <div style={{ display: "flex", gap: 10, marginTop: "auto", paddingTop: 16, borderTop: "1px solid var(--line)" }}>
+                  <a href={m.linkedin} target="_blank" rel="noopener noreferrer" className="eq-btn eq-btn-dark" style={{ flex: 1, justifyContent: "center" }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z" />
                     </svg>
                     LinkedIn
                   </a>
-                  <a
-                    href={`mailto:${m.email}`}
-                    className="eq-btn eq-btn-ghost"
-                    style={{ flex: 1, justifyContent: "center", fontSize: 12 }}
-                  >
-                    {m.email}
+                  <a href="/#contacto" className="eq-btn eq-btn-ghost" style={{ flex: 1, justifyContent: "center" }}>
+                    Contactar →
                   </a>
                 </div>
+
               </div>
             </div>
           ))}
@@ -250,10 +196,11 @@ function ManifestoSec() {
     { n: "03", t: "Plazos cerrados", d: "Te decimos cuánto tarda y cuesta antes de empezar. Y se cumple." },
     { n: "04", t: "Sin permanencia", d: "Si no funciona, te vas. Nos lo ganamos cada mes." },
   ];
+  const delays = [undefined, "150", "280", "360"];
   return (
     <section style={{ padding: "120px 0", background: "var(--blue-900)", color: "var(--bg)" }}>
       <div className="eq-container">
-        <div className="eq-label" style={{ color: "var(--blue-300)" }}>
+        <div data-fade className="eq-label" style={{ color: "var(--blue-300)" }}>
           <span
             style={{
               display: "inline-block",
@@ -265,6 +212,8 @@ function ManifestoSec() {
           <span style={{ color: "#fff" }}>Cómo trabajamos</span>
         </div>
         <h2
+          data-fade
+          data-delay="100"
           className="eq-display"
           style={{
             fontSize: "clamp(48px, 7vw, 120px)",
@@ -280,6 +229,8 @@ function ManifestoSec() {
           {items.map((r, i) => (
             <div
               key={r.n}
+              data-fade
+              data-delay={delays[i]}
               style={{
                 padding: "40px 0",
                 borderTop: "1px solid rgba(255,255,255,0.15)",
@@ -306,7 +257,7 @@ function ManifestoSec() {
                 >
                   {r.t}
                 </div>
-                <p style={{ fontSize: 15, lineHeight: 1.55, color: "rgba(220,230,255,0.85)", maxWidth: 380, margin: 0 }}>
+                <p style={{ fontSize: 15, fontWeight: 600, lineHeight: 1.55, color: "rgba(220,230,255,0.95)", maxWidth: 380, margin: 0 }}>
                   {r.d}
                 </p>
               </div>
@@ -326,6 +277,7 @@ function Portfolio() {
     <section className="eq-section" id="portfolio" style={{ background: "var(--bg)" }}>
       <div className="eq-container">
         <div
+          data-fade
           style={{
             display: "flex",
             justifyContent: "space-between",
@@ -367,7 +319,7 @@ function Portfolio() {
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
+        <div data-fade data-delay="150" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
           {filtered.map((p, i) => (
             <a
               key={p.name}
@@ -454,6 +406,7 @@ function CTAEquipo() {
     <section style={{ padding: "140px 0", textAlign: "center", background: "var(--bg)" }}>
       <div className="eq-container">
         <h2
+          data-fade
           className="eq-display"
           style={{ fontSize: "clamp(48px, 8vw, 150px)", maxWidth: "16ch", margin: "0 auto" }}
         >
@@ -461,18 +414,23 @@ function CTAEquipo() {
           para tu proyecto?
         </h2>
         <p
+          data-fade
+          data-delay="150"
           style={{
             maxWidth: 540,
             margin: "32px auto 0",
             fontSize: 18,
+            fontWeight: 600,
             lineHeight: 1.5,
-            color: "var(--ink-dim)",
+            color: "#111111",
           }}
         >
           Estamos abiertos a colaboraciones, proyectos a medida, o a charlar de café. Si nos has visto
           en LinkedIn, escríbenos directamente.
         </p>
         <div
+          data-fade
+          data-delay="280"
           style={{
             display: "flex",
             gap: 12,
@@ -494,6 +452,23 @@ function CTAEquipo() {
 }
 
 export default function EquipoPage() {
+  useEffect(() => {
+    const nodes = document.querySelectorAll('[data-fade]');
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('fade-in');
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+    );
+    nodes.forEach((n) => io.observe(n));
+    return () => io.disconnect();
+  }, []);
+
   return (
     <div style={{ background: "var(--bg)" }}>
       <HeroEquipo />
