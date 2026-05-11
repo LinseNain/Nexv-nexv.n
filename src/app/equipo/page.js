@@ -6,8 +6,8 @@ const TEAM = [
   {
     id: "linse",
     name: "Linse",
-    role: "Fundadora · Desarrollo Full Stack · Sistemas · Diseño Web",
-    bio: "Técnica en Sistemas Microinformáticos y Redes, con formación en desarrollo full stack y ciberseguridad. Construyo desde el servidor hasta la interfaz: infraestructura, backend, frontend, integración de APIs y automatizaciones. Trabajo con IA como herramienta real para ir más rápido y entregar mejor.",
+    role: "Fundador · Desarrollo Full Stack · Sistemas · Diseño Web",
+    bio: "Técnico en Sistemas Microinformáticos y Redes, con formación en desarrollo full stack y ciberseguridad. Construyo desde el servidor hasta la interfaz: infraestructura, backend, frontend, integración de APIs y automatizaciones. Trabajo con IA como herramienta real para ir más rápido y entregar mejor.",
     photo: "/Linse.png",
     skills: ["FreeBSD", "Apache", "PHP", "Python", "MariaDB", "React", "HTML/CSS", "APIs REST", "Figma", "Git", "Microsoft 365 API"],
     linkedin: "https://es.linkedin.com/in/linsenaine",
